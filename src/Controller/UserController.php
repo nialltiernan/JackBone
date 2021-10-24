@@ -3,8 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\Type\UserType;
+use App\Form\UserType;
 use App\Repository\UserRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -31,7 +32,7 @@ class UserController extends AbstractController
         if ($this->shouldCreateUser($form)) {
             /** @var User $user */
             $user = $form->getData();
-            $user->setCreatedAt(new \DateTimeImmutable());
+            $user->setCreatedAt(new DateTimeImmutable());
 
             $entityManager->persist($user);
             $entityManager->flush();
