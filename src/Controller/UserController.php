@@ -3,11 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\UserCreate;
+use App\Form\UserType;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +25,7 @@ class UserController extends AbstractController
     #[Route('/users/create', name: 'users.create')]
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(UserCreate::class, new User());
+        $form = $this->createForm(UserType::class, new User());
         $form->handleRequest($request);
 
         if ($this->isPostValid($form)) {
@@ -43,10 +44,27 @@ class UserController extends AbstractController
         return $this->renderForm('user/create.html.twig', ['form' => $form]);
     }
 
-    #[Route('/users/{user}', name: 'users.show', methods: 'GET')]
-    public function show(User $user): Response
+    #[Route('/users/{user}', name: 'users.show', methods: ['GET', 'POST'])]
+    public function show(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
-        return $this->renderForm('user/show.html.twig', ['user' => $user]);
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($this->isPostValid($form)) {
+            /** @var User $user */
+            $user = $form->getData();
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'User updated');
+
+            return $this->redirectToRoute('users.index');
+        }
+
+        $form->add('save', SubmitType::class, ['label' =>'Update']);
+
+        return $this->renderForm('user/show.html.twig', ['user' => $user, 'form' => $form]);
     }
 
     private function isPostValid(FormInterface $form): bool
