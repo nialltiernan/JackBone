@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\UserType;
+use App\Form\UserCreate;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,18 +18,16 @@ class UserController extends AbstractController
     #[Route('/users', name: 'users.index')]
     public function index(UserRepository $repository): Response
     {
-        return $this->render('user/index.html.twig', [
-            'users' => $repository->findAll(),
-        ]);
+        return $this->render('user/index.html.twig', ['users' => $repository->findAll()]);
     }
 
     #[Route('/users/create', name: 'users.create')]
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(UserType::class, new User());
+        $form = $this->createForm(UserCreate::class, new User());
         $form->handleRequest($request);
 
-        if ($this->shouldCreateUser($form)) {
+        if ($this->isPostValid($form)) {
             /** @var User $user */
             $user = $form->getData();
             $user->setCreatedAt(new DateTimeImmutable());
@@ -37,23 +35,21 @@ class UserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
+            $this->addFlash('success', 'User created');
+
             return $this->redirectToRoute('users.index');
         }
 
-        return $this->renderForm('user/create.html.twig', [
-            'form' => $form
-        ]);
+        return $this->renderForm('user/create.html.twig', ['form' => $form]);
     }
 
-    #[Route('/users/{user}', name: 'users.show')]
+    #[Route('/users/{user}', name: 'users.show', methods: 'GET')]
     public function show(User $user): Response
     {
-        return $this->render('user/show.html.twig', [
-            'user' => $user
-        ]);
+        return $this->renderForm('user/show.html.twig', ['user' => $user]);
     }
 
-    private function shouldCreateUser(FormInterface $form): bool
+    private function isPostValid(FormInterface $form): bool
     {
         return $form->isSubmitted() && $form->isValid();
     }
