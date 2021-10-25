@@ -3,7 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\UserType;
+use App\Form\UserDeleteType;
+use App\Form\UserEditType;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,16 +26,11 @@ class UserController extends AbstractController
     #[Route('/users/create', name: 'users.create')]
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(UserType::class, new User());
+        $form = $this->createForm(UserEditType::class, new User());
         $form->handleRequest($request);
 
         if ($this->isPostValid($form)) {
-            /** @var User $user */
-            $user = $form->getData();
-            $user->setCreatedAt(new DateTimeImmutable());
-
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $this->createUser($form, $entityManager);
 
             $this->addFlash('success', 'User created');
 
@@ -44,31 +40,66 @@ class UserController extends AbstractController
         return $this->renderForm('user/create.html.twig', ['form' => $form]);
     }
 
-    #[Route('/users/{user}', name: 'users.show', methods: ['GET', 'POST'])]
+    #[Route('/users/{user}', name: 'users.show', methods: ['GET', 'POST', 'DELETE'])]
     public function show(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(UserType::class, $user);
-        $form->handleRequest($request);
+        $editForm = $this->createForm(UserEditType::class, $user);
+        $editForm->handleRequest($request);
 
-        if ($this->isPostValid($form)) {
-            /** @var User $user */
-            $user = $form->getData();
-
-            $entityManager->persist($user);
-            $entityManager->flush();
-
+        if ($this->isPostValid($editForm)) {
+            $this->updateUser($editForm, $entityManager);
             $this->addFlash('success', 'User updated');
-
             return $this->redirectToRoute('users.index');
         }
 
-        $form->add('save', SubmitType::class, ['label' =>'Update']);
+        $deleteForm = $this->createForm(UserDeleteType::class, $user);
+        $deleteForm->handleRequest($request);
 
-        return $this->renderForm('user/show.html.twig', ['user' => $user, 'form' => $form]);
+        if ($this->isPostValid($deleteForm)) {
+            $this->deleteUser($deleteForm, $entityManager);
+            $this->addFlash('success', 'User deleted');
+            return $this->redirectToRoute('users.index');
+        }
+
+        $editForm->add('save', SubmitType::class, ['label' => 'Update']);
+
+        return $this->renderForm('user/show.html.twig', [
+            'user' => $user,
+            'editForm' => $editForm,
+            'deleteForm' => $deleteForm,
+        ]);
     }
 
     private function isPostValid(FormInterface $form): bool
     {
         return $form->isSubmitted() && $form->isValid();
+    }
+
+    private function createUser(FormInterface $form, EntityManagerInterface $entityManager): void
+    {
+        /** @var User $user */
+        $user = $form->getData();
+        $user->setCreatedAt(new DateTimeImmutable());
+
+        $entityManager->persist($user);
+        $entityManager->flush();
+    }
+
+    private function updateUser(FormInterface $editForm, EntityManagerInterface $entityManager): void
+    {
+        /** @var User $user */
+        $user = $editForm->getData();
+
+        $entityManager->persist($user);
+        $entityManager->flush();
+    }
+
+    private function deleteUser(FormInterface $editForm, EntityManagerInterface $entityManager): void
+    {
+        /** @var User $user */
+        $user = $editForm->getData();
+
+        $entityManager->remove($user);
+        $entityManager->flush();
     }
 }
