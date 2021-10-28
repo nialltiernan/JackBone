@@ -29,11 +29,9 @@ class UserController extends AbstractController
         $form = $this->createForm(UserEditType::class, new User());
         $form->handleRequest($request);
 
-        if ($this->isPostValid($form)) {
+        if ($this->isSubmittedRequestValid($form)) {
             $this->createUser($form, $entityManager);
-
             $this->addFlash('success', 'User created');
-
             return $this->redirectToRoute('users.index');
         }
 
@@ -46,7 +44,7 @@ class UserController extends AbstractController
         $editForm = $this->createForm(UserEditType::class, $user);
         $editForm->handleRequest($request);
 
-        if ($this->isPostValid($editForm)) {
+        if ($this->isSubmittedRequestValid($editForm)) {
             $this->updateUser($editForm, $entityManager);
             $this->addFlash('success', 'User updated');
             return $this->redirectToRoute('users.index');
@@ -55,7 +53,7 @@ class UserController extends AbstractController
         $deleteForm = $this->createForm(UserDeleteType::class, $user);
         $deleteForm->handleRequest($request);
 
-        if ($this->isPostValid($deleteForm)) {
+        if ($this->isSubmittedRequestValid($deleteForm)) {
             $this->deleteUser($deleteForm, $entityManager);
             $this->addFlash('success', 'User deleted');
             return $this->redirectToRoute('users.index');
@@ -70,7 +68,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    private function isPostValid(FormInterface $form): bool
+    private function isSubmittedRequestValid(FormInterface $form): bool
     {
         return $form->isSubmitted() && $form->isValid();
     }
@@ -80,7 +78,6 @@ class UserController extends AbstractController
         /** @var User $user */
         $user = $form->getData();
         $user->setCreatedAt(new DateTimeImmutable());
-
         $entityManager->persist($user);
         $entityManager->flush();
     }
@@ -89,7 +86,6 @@ class UserController extends AbstractController
     {
         /** @var User $user */
         $user = $editForm->getData();
-
         $entityManager->persist($user);
         $entityManager->flush();
     }
@@ -98,7 +94,6 @@ class UserController extends AbstractController
     {
         /** @var User $user */
         $user = $editForm->getData();
-
         $entityManager->remove($user);
         $entityManager->flush();
     }
