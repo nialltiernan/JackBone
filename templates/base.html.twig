@@ -22,6 +22,24 @@
         </nav>
 
         <main role="main" class="container">
+            {% for message in app.flashes('primary') %}
+                <div class="alert alert-primary">
+                    {{ message|raw }}
+                </div>
+            {% endfor %}
+
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">
+                    {{ message|raw }}
+                </div>
+            {% endfor %}
+
+            {% for message in app.flashes('danger') %}
+                <div class="alert alert-danger">
+                    {{ message|raw }}
+                </div>
+            {% endfor %}
+
             {% block body %}{% endblock %}
         </main>
     </body>
