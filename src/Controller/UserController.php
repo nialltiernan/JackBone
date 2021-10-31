@@ -30,8 +30,15 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($this->isSubmittedRequestValid($form)) {
-            $this->createUser($form, $entityManager);
-            $this->addFlash('success', 'User created');
+            /** @var User $user */
+            $user = $form->getData();
+
+            $user->setCreatedAt(new DateTimeImmutable());
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $this->addFlash('success', sprintf('User created: %s', $user->getUsername()));
             return $this->redirectToRoute('users.index');
         }
 
@@ -45,8 +52,13 @@ class UserController extends AbstractController
         $editForm->handleRequest($request);
 
         if ($this->isSubmittedRequestValid($editForm)) {
-            $this->updateUser($editForm, $entityManager);
-            $this->addFlash('success', 'User updated');
+            /** @var User $user */
+            $user = $editForm->getData();
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $this->addFlash('success', sprintf('User updated: %s', $user->getUsername()));
             return $this->redirectToRoute('users.index');
         }
 
@@ -54,8 +66,14 @@ class UserController extends AbstractController
         $deleteForm->handleRequest($request);
 
         if ($this->isSubmittedRequestValid($deleteForm)) {
-            $this->deleteUser($deleteForm, $entityManager);
-            $this->addFlash('success', 'User deleted');
+            /** @var User $user */
+            $user = $editForm->getData();
+
+            $entityManager->remove($user);
+            $entityManager->flush();
+
+            $this->addFlash('danger', sprintf('User deleted: %s', $user->getUsername()));
+
             return $this->redirectToRoute('users.index');
         }
 
@@ -71,30 +89,5 @@ class UserController extends AbstractController
     private function isSubmittedRequestValid(FormInterface $form): bool
     {
         return $form->isSubmitted() && $form->isValid();
-    }
-
-    private function createUser(FormInterface $form, EntityManagerInterface $entityManager): void
-    {
-        /** @var User $user */
-        $user = $form->getData();
-        $user->setCreatedAt(new DateTimeImmutable());
-        $entityManager->persist($user);
-        $entityManager->flush();
-    }
-
-    private function updateUser(FormInterface $editForm, EntityManagerInterface $entityManager): void
-    {
-        /** @var User $user */
-        $user = $editForm->getData();
-        $entityManager->persist($user);
-        $entityManager->flush();
-    }
-
-    private function deleteUser(FormInterface $editForm, EntityManagerInterface $entityManager): void
-    {
-        /** @var User $user */
-        $user = $editForm->getData();
-        $entityManager->remove($user);
-        $entityManager->flush();
     }
 }
