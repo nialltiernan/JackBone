@@ -16,7 +16,7 @@
 
     <h1>Users</h1>
 
-    {% if users %}
+    {% if tableRows %}
         <table class="table">
             <thead>
             <tr>
@@ -27,13 +27,14 @@
             </tr>
             </thead>
             <tbody>
-            {% for user in users %}
+            {% for row in tableRows %}
                 <tr>
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.username }}</td>
-                    <td>
-                        <a href="{{ path('users.show', {user: user.id}) }}" class="btn btn-success">Edit</a>
+                    <td>{{ row.user.id }}</td>
+                    <td>{{ row.user.email }}</td>
+                    <td>{{ row.user.username }}</td>
+                    <td class="d-flex">
+                        <a href="{{ path('users.show', {user: row.user.id}) }}" class="btn btn-primary">Edit</a>
+                        {{ form(row.deleteForm) }}
                     </td>
                 </tr>
             {% endfor %}

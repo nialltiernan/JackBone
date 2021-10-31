@@ -20,7 +20,16 @@ class UserController extends AbstractController
     #[Route('/users', name: 'users.index')]
     public function index(UserRepository $repository): Response
     {
-        return $this->render('user/index.html.twig', ['users' => $repository->findAll()]);
+        $tableRows = [];
+
+        foreach ($repository->findAll() as $user) {
+            $deleteForm = $this->createForm(UserDeleteType::class, $user, [
+                'action' => $this->generateUrl('users.show', ['user' => $user->getId()])
+            ]);
+            $tableRows[] = ['user' => $user, 'deleteForm' => $deleteForm->createView()];
+        }
+
+        return $this->render('user/index.html.twig', ['tableRows' => $tableRows]);
     }
 
     #[Route('/users/create', name: 'users.create')]
