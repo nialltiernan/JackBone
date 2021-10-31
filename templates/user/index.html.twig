@@ -2,15 +2,21 @@
 {% block title %}List users{% endblock %}
 
 {% block body %}
+    {% for message in app.flashes('primary') %}
+        <div class="alert alert-primary">
+            {{ message|raw }}
+        </div>
+    {% endfor %}
+
     {% for message in app.flashes('success') %}
         <div class="alert alert-success">
-            {{ message }}
+            {{ message|raw }}
         </div>
     {% endfor %}
 
     {% for message in app.flashes('danger') %}
         <div class="alert alert-danger">
-            {{ message }}
+            {{ message|raw }}
         </div>
     {% endfor %}
 
