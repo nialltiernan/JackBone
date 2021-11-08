@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class UserShowController extends AbstractController
+class ShowController extends AbstractController
 {
     #[Route('/users/{user}', name: 'users.show', methods: ['GET', 'POST', 'DELETE'])]
     public function __invoke(Request $request, User $user, EntityManagerInterface $entityManager): Response
