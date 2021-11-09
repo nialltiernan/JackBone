@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+{% block title %}Emojis{% endblock %}
+
+{% block body %}
+    <h1>Emojis</h1>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Emoji</th>
+            <th scope="col">Name</th>
+            <th scope="col">Category</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for emoji in emojis %}
+            <tr>
+                <th scope="row">{{  emoji.id }}</th>
+                <td>{{ emoji.html | raw }}</td>
+                <td>{{ emoji.name | capitalize }}</td>
+                <td>
+                    <a href="{{ path('emoji-categories.show', {category: emoji.category.id}) }}">
+                        {{ emoji.category.name }}
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

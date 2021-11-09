@@ -11,7 +11,7 @@ final class Version20211017134138 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Create user';
+        return 'Create user table';
     }
 
     public function up(Schema $schema): void
@@ -23,8 +23,7 @@ final class Version20211017134138 extends AbstractMigration
                 username   VARCHAR(255)       NOT NULL,
                 created_at DATETIME           NOT NULL DEFAULT NOW(),
                 PRIMARY KEY(id)
-            )
-            DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB"
+            )"
         );
     }
 
