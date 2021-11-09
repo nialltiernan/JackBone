@@ -32,7 +32,7 @@ final class Version20211101203805 extends AbstractMigration
                         (
                             id       INT AUTO_INCREMENT PRIMARY KEY,
                             name     VARCHAR(50) CHARSET latin1 NOT NULL,
-                            html     VARCHAR(10) CHARSET latin1 NOT NULL,
+                            html     VARCHAR(100) CHARSET latin1 NOT NULL,
                             category_id INT                        NULL,
                             CONSTRAINT emoji_emoji_category_id_fk
                                 FOREIGN KEY (category_id) REFERENCES emoji_category (id)
