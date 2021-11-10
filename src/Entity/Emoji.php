@@ -20,7 +20,7 @@ class Emoji
     private string $html;
 
     #[ORM\ManyToOne(targetEntity: EmojiCategory::class, inversedBy: 'emojis')]
-    private $category;
+    private EmojiCategory $category;
 
     public function getId(): ?int
     {
@@ -49,12 +49,12 @@ class Emoji
         return $this;
     }
 
-    public function getCategory(): ?EmojiCategory
+    public function getCategory(): EmojiCategory
     {
         return $this->category;
     }
 
-    public function setCategory(?EmojiCategory $category): self
+    public function setCategory(EmojiCategory $category): self
     {
         $this->category = $category;
         return $this;

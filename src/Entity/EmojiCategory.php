@@ -6,6 +6,7 @@ use App\Repository\EmojiCategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 
 #[ORM\Entity(repositoryClass: EmojiCategoryRepository::class)]
 class EmojiCategory
@@ -13,21 +14,21 @@ class EmojiCategory
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private ?int $id;
+    private int $id;
 
     #[ORM\Column(type: 'string', length: 50)]
     private string $name;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Emoji::class)]
-    private $emojis;
+    private Collection $emojis;
 
-//    #[Pure]
+    #[Pure]
     public function __construct()
     {
         $this->emojis = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
