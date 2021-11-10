@@ -4,6 +4,14 @@
 {% block body %}
     <h1>Emoji Category</h1>
 
-    {{ category.name }}
+    <h2>{{ category.name }}</h2>
+
+    <ul class="list-group">
+        {% for emoji in category.emojis %}
+            <li class="list-group-item">
+                {{ emoji.html | raw }}
+            </li>
+        {% endfor %}
+    </ul>
 
 {% endblock %}
