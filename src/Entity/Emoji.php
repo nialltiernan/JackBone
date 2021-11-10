@@ -11,7 +11,7 @@ class Emoji
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private ?int $id;
+    private int $id;
 
     #[ORM\Column(type: 'string', length: 50)]
     private string $name;
@@ -22,7 +22,7 @@ class Emoji
     #[ORM\ManyToOne(targetEntity: EmojiCategory::class, inversedBy: 'emojis')]
     private EmojiCategory $category;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
