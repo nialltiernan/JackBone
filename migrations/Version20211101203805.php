@@ -31,8 +31,8 @@ final class Version20211101203805 extends AbstractMigration
         $this->addSql('CREATE TABLE emoji
                         (
                             id       INT AUTO_INCREMENT PRIMARY KEY,
-                            name     VARCHAR(50) CHARSET latin1 NOT NULL,
-                            html     VARCHAR(100) CHARSET latin1 NOT NULL,
+                            name     VARCHAR(100) CHARSET latin1 NOT NULL,
+                            html     VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
                             category_id INT                        NULL,
                             CONSTRAINT emoji_emoji_category_id_fk
                                 FOREIGN KEY (category_id) REFERENCES emoji_category (id)

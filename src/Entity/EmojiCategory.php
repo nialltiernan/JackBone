@@ -16,7 +16,7 @@ class EmojiCategory
     #[ORM\Column(type: 'integer')]
     private int $id;
 
-    #[ORM\Column(type: 'string', length: 50)]
+    #[ORM\Column(type: 'string', length: 100)]
     private string $name;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Emoji::class)]

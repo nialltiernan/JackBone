@@ -13,10 +13,10 @@ class Emoji
     #[ORM\Column(type: 'integer')]
     private int $id;
 
-    #[ORM\Column(type: 'string', length: 50)]
+    #[ORM\Column(type: 'string', length: 100)]
     private string $name;
 
-    #[ORM\Column(type: 'string', length: 10)]
+    #[ORM\Column(type: 'string', length: 100)]
     private string $html;
 
     #[ORM\ManyToOne(targetEntity: EmojiCategory::class, inversedBy: 'emojis')]
