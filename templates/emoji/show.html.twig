@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+{% block title %}Emoji{% endblock %}
+
+{% block body %}
+    <h1>{{ emoji.name }}</h1>
+    <div class="display-1">{{ emoji.html | raw }}</div>
+{% endblock %}
